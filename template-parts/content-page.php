@@ -32,61 +32,29 @@
         <div class="section">
             <h2 class="section-heading">What we do</h2>
             <div class="service-list">
-                <?php 
-
-// args
-$args = array(
-    'numberposts'   => -1,
-    'post_type'     => 'service_item',
-);
-
-
-// query
-$the_query = new WP_Query( $args );
-
-?>
-                <?php if( $the_query->have_posts() ): ?>
-                <ul>
-                    <?php while( $the_query->have_posts() ) : $the_query->the_post(); ?>
-                    <li>
-                        <a href="<?php the_permalink(); ?>">
-                            <img src="<?php the_field('event_thumbnail'); ?>" />
-                            <?php the_title(); ?>
-                        </a>
-                    </li>
-                    <?php endwhile; ?>
-                </ul>
-                <?php endif; ?>
-
-                <?php wp_reset_query();   // Restore global post data stomped by the_post(). ?>
-
-                <!-- 
-
-		<div class="service">
-			<img src="../assets/images/figma.png" alt="" class="service-image">
-			<h3 class="service-name">Web Depelopment</h3>
-			<p class="service-description">We specialize in developing interactive, scalable, brand-oriented, and business-ready customized web design.</p>
-
-		</div>
-		<div class="service">
-		<?php
-$featured_post = get_field('service_item');
-if( $featured_post ): ?>
-    <h3><?php echo esc_html( $featured_post->post_title ); ?></h3>
-<?php endif; ?>
-		</div>
-		<div class="service">3</div>
-		<div class="service">4</div> -->
-
-
-
+                <?php $services = new WP_Query( array( 'post_type' => 'services', 'posts_per_page' => 4, 'orderby' => 'fecha', 'order' => 'ASC') ); ?>
+                <?php while ( $services->have_posts() ) : $services->the_post(); ?>
+                <div class="service">
+                    <div class="service-thumbnail">
+                        <?php the_post_thumbnail( 'full' ); ?>
+                    </div>
+                    <div class="service-info">
+                        <div class="service-name">
+                            <h3><?php the_title(); ?></h3>
+                        </div>
+                        <div class="service-description"><?php the_content(); ?></div>
+                    </div>
+                </div>
+                <?php endwhile; ?>
             </div>
             <p class="section-footer">
                 A full-service design agency comprised </br> of diverse minds who have a passion </br> for creating
                 digital experiences.
             </p>
         </div>
-
+        <?php 
+    // Reset the global post object so that the rest of the page works correctly.
+    wp_reset_postdata(); ?>
         <?php
 		the_content();
 
